@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Cloud-based OCR</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 500px; margin: auto; }
+        .upload-box { border: 2px dashed #0078D4; padding: 20px; text-align: center; border-radius: 8px; }
+        button { background-color: #0078D4; color: white; border: none; padding: 10px 20px; margin-top: 15px; cursor: pointer; border-radius: 4px; }
+        button:hover { background-color: #005A9E; }
+        #status { margin-top: 15px; font-weight: bold; color: #333; }
+    </style>
+</head>
+<body>
+
+    <div class="upload-box">
+        <h2>Hệ thống OCR Trực Tuyến</h2>
+        <input type="file" id="fileInput" accept="image/*" />
+        <br>
+        <button onclick="uploadImage()">Tải Ảnh Lên Cloud</button>
+        <p id="status"></p>
+    </div>
+
+    <script type="module">
+        import { BlobServiceClient } from "https://cdn.jsdelivr.net/npm/@azure/storage-blob@12.14.0/+esm";
+
+        window.uploadImage = async function() {
+            const fileInput = document.getElementById('fileInput');
+            const statusText = document.getElementById('status');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                statusText.innerText = "Vui lòng chọn một file ảnh trước!";
+                statusText.style.color = "red";
+                return;
+            }
+
+            statusText.innerText = "Đang tải ảnh lên Azure...";
+            statusText.style.color = "blue";
+            
+            // DÁN URL SAS BẠN ĐÃ COPY VÀO TRONG DẤU NGOẶC KÉP DƯỚI ĐÂY
+            const sasUrl = "https://ocrstoragechuong.blob.core.windows.net/?sv=2025-11-05&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2026-06-22T03:31:23Z&st=2026-04-21T19:16:23Z&spr=https&sig=dMQeUmPw0HXecuJ1UmBOV%2Bd8vFNEgBATgJRva7D2kRY%3D"; 
+            
+            try {
+                // Khởi tạo trực tiếp không cần thông qua chữ azblob nữa
+                const blobServiceClient = new BlobServiceClient(sasUrl);
+                const containerClient = blobServiceClient.getContainerClient("images");
+                const blockBlobClient = containerClient.getBlockBlobClient(file.name);
+                
+                await blockBlobClient.uploadBrowserData(file);
+
+                statusText.innerText = "Tải lên thành công! Hàm Serverless đang tự động xử lý...";
+                statusText.style.color = "green";
+                
+            } catch (error) {
+                statusText.innerText = "Lỗi khi tải lên: " + error.message;
+                statusText.style.color = "red";
+            }
+        }
+    </script>
+
+</body>
+</html>
