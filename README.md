@@ -119,4 +119,4 @@ Mở `index.html` bằng Live Server tại `http://127.0.0.1:5500`.
 
 ## 👥 Nhóm thực hiện
 
-Dự án được thực hiện bởi nhóm sinh viên với sự phân công rõ ràng theo từng lĩnh vực: hạ tầng cloud, backend serverless, tích hợp AI, giao diện người dùng và nghiên cứu lý thuyết.
+Dự án được thực hiện bởi nhóm 7 với sự phân công rõ ràng theo từng lĩnh vực: hạ tầng cloud, backend serverless, tích hợp AI, giao diện người dùng và nghiên cứu lý thuyết.
